@@ -40,7 +40,7 @@ if($this->session->flashdata('sucess')){echo "<div class=alert-success>".$this->
 </div> 
 
 <div class="form-group">
-<label>Slider Image</label>
+<label>Slider Image (1920 * 1136)</label>
 <input type="file" name="slider_image" id="slider_image"> </br>
 
 <?php if(isset($get_results) && file_exists("slider/".$get_results['main_slider']) && !empty($get_results['main_slider']) ) 
