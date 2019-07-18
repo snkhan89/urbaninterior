@@ -1369,7 +1369,19 @@ public function update_project($eid,$category,$title,$thumb_image)
 
 
 
-
+public function Project_status($id)
+{
+	$query=$this->db->query("UPDATE project SET status = IF(status=1, 0, 1) WHERE id ='$id'");
+	$query=$this->db->affected_rows();
+	if(isset($query) && $query > 0)
+	{
+	   return 1;
+	}
+	else
+	{
+	   return 2; 
+	}
+}
 
 
 
