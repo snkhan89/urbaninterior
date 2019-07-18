@@ -207,21 +207,21 @@ public function status()
 	
 	     if(isset($eid) && !empty($eid))
 		 {
-			$get_status = json_decode($this->Add_model->status($eid),true);
+			$get_status = json_decode($this->Add_model->slider_status($eid),true);
 			if($get_status == 1)
 			{
 					$this->session->set_flashdata('sucess',"status change sucessfully.");
-					redirect('About/view');
+					redirect('Slider/view');
 			}
 			else if($get_status == 2)
 			{
 					$this->session->set_flashdata('error',"Not change sucessfully.");
-					redirect('About/view');
+					redirect('Slider/view');
 			}
 			else
 			{
 					$this->session->set_flashdata('error',"Sorry,try again!.");
-					redirect('About/view');
+					redirect('Slider/view');
 			}
 					
 		 
@@ -231,7 +231,7 @@ public function status()
 		 else
          {
 			 $this->session->set_flashdata('error',"Sorry,try again!.");
-			 redirect('About/view');
+			 redirect('Slider/view');
 		 }
 }
 

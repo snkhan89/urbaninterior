@@ -59,7 +59,7 @@ if($this->session->flashdata('sucess')){echo "<div class=alert-success>".$this->
    <td>
    <a href="<?php echo base_url();?>Slider/edit/<?php echo $data['id']; ?>" class="fa fa-pencil"></a>&nbsp&nbsp
    
-   <?php  if($data['status'] == 0)
+   <?php  if($data['status'])
           { ?>
 		  <a href="<?php echo base_url();?>Slider/status/<?php echo $data['id']; ?>" class="fa fa-check-circle" style="color:green;"></a>  
 		  <?php }
