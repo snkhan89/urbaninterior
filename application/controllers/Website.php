@@ -14,6 +14,7 @@ class Website extends CI_Controller
 	{
         $this->load->model("Website_model");
         $data['slider'] = $this->Website_model->get_slider();
+        $data['about_us'] = $this->Website_model->get_about_us();
 	    $data['title'] = 'Urban Interior Works';
         $this->load->view('website',$data);
 	}
