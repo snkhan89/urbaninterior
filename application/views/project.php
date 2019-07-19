@@ -62,7 +62,7 @@ if(isset($category))
  <hr>
  
 <div class="form-group">
-<label>Thumbnail Image</label>
+<label>Thumbnail Image (800 * 600)</label>
 <input type="file" name="thumb_image" id="thumb_image"> </br>
 
 <?php if(isset($get_results) && file_exists("Project_Image/".$get_results['thumb_image']) && !empty($get_results['thumb_image']) ) 
