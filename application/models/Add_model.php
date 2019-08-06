@@ -1295,10 +1295,18 @@ public function service_status($id)
 /*------------------------------------------------------------*/
 
 
-public function project($category,$title,$image)
+/*public function project($category,$title,$image,$datainfo)
 {
 	    $my_array = array('category'=>$category,'title'=>$title,'thumb_image'=>$image);
 		$this->db->insert('project',$my_array);
+		$insert_id = $this->db->insert_id();
+		
+		foreach($datainfo as $img)
+		{
+			$myarray = array('project_id'=>$insert_id,'image'=>$img['name']);
+			$this->db->insert('project_details',$myarray);
+		}
+		
 	    $cnt=$this->db->affected_rows();
 		if(isset($cnt) && $cnt > 0)
 		{
@@ -1308,7 +1316,42 @@ public function project($category,$title,$image)
 		{
 			return 2; 
 		}
-}
+}*/
+
+
+
+public function project($category,$title,$cimage,$multiple_image)
+{
+	
+	$this->db->trans_start();
+	
+	$array = array('category'=>$category,'title'=>$title,'thumb_image'=>$cimage);
+	$this->db->insert("project",$array);
+	$lastid = $this->db->insert_id();
+	if (isset($multiple_image) && $multiple_image != "")
+	{
+		$mmultiple_image = explode(",", $multiple_image);
+		$p = 1;
+		foreach($mmultiple_image as $row)
+		{
+			$query = $this->db->query("insert into project_details(project_id,image)values('".$lastid."','".$row."')");
+			$p++;
+		}
+		$this->db->trans_complete();
+		if ($this->db->trans_status() === FALSE)
+		{
+			$this->db->trans_rollback();
+			return 2;
+		}
+		else
+		{
+			$this->db->trans_commit();
+			return 1;
+		}
+		
+	}
+	 
+ }
 
 
 public function get_project()

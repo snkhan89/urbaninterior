@@ -10,12 +10,14 @@
 <div class="panel-heading">Add Project</div>
 <div class="panel-body">
 
+<center> 
+<?php if(isset($error) && !empty($error)) { ?><div class="err"><?php echo $error; ?></div><?php } ?>
+<?php if(isset($sucess) && !empty($sucess)) { ?><div class="success"><?php echo $sucess; ?></div><?php } ?>
 <?php
-if($this->session->flashdata('error')){echo "<div class=alert-danger>".$this->session->flashdata('error')."</div>";}
-if($this->session->flashdata('sucess')){echo "<div class=alert-success>".$this->session->flashdata('sucess')."</div>";}
-
+    if($this->session->flashdata('error_login')){echo '<div class="alert alert-danger">'.$this->session->flashdata('error_login')."</div>";}
+    if($this->session->flashdata('sucess')){echo '<div class="alert alert-success">'.$this->session->flashdata('sucess')."</div>";}
 ?>
-
+</center>
 
 <div class="row">
 <div class="col-lg-12" style="width:100%">
@@ -61,7 +63,7 @@ if(isset($category))
 
  <hr>
  
-<div class="form-group">
+<!--<div class="form-group">
 <label>Thumbnail Image (800 * 600)</label>
 <input type="file" name="thumb_image" id="thumb_image"> </br>
 
@@ -76,12 +78,60 @@ if(isset($category))
 
 <hr> 
 
-<!--<div class="form-group">
-<label>Project Multiple Image</label>
-<input type="file" name="multiple_image" id="multiple_image"> </br>
+<div class="form-group">
+<label>Multiple Image</label>
+<input type="file" name="multiple_image[]" id="multiple_image" multiple="multiple"> </br>
 </div> -->
 
-
+        
+		<?php if(isset($get_results) && $get_results['cover_image']!="" || isset($eid)){?>
+        <div class="form-group">
+        <label>Old Category Image</label>
+        <input type="hidden" name="old_cover" value="<?php if(isset($get_results)){ echo $get_results['cover_image'];} ?><?php echo set_value('old_cover'); ?>"/>
+        <input type="hidden" name="old_cover_resize" value="<?php if(isset($get_results)){echo $get_results['rcover'];} ?><?php echo set_value('old_cover_resize'); ?>"/>
+      
+        <img src="<?php echo base_url();?>Project_Image/<?php if(isset($get_results)){ echo $get_results['cover_image'];}else{ echo set_value('cover_image');  } ?>" title="<?php if(isset($get_results)){ echo $get_results['cover_image'];} ?>" alt="<?php if(isset($get_results)){ echo $get_results['cover_image'];} ?>" width="20%" height="20%" />
+        </div>
+		 <?php }?>
+		
+		
+		<div class="form-group">
+        <label>Cover Image</label>
+        <input type="file" class="form-control" name="cover_image" id="cover_image"/>
+        </div>
+		<?php echo form_error('cover_image'); ?>
+		
+		<div class="form-group">
+        <img id="blah" src="#"  width="75" height="75"alt="your image" />
+		<script>
+		$("#blah").hide();
+		function readURL(input) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function (e) {
+			$('#blah').attr('src', e.target.result);
+			}
+			  reader.readAsDataURL(input.files[0]);
+			}
+		}
+		$("#cover_image").change(function(){
+		readURL(this);
+		$("#blah").show();
+		});
+		</script>
+        </div>
+		
+		
+		<hr> 
+		
+		<div class="form-group">
+        <label>Multiple Image</label>
+        <input type="file" id="mimage"  class="form-control" name="userFiles[]" multiple/>
+        </div>         
+        <?php echo form_error('images'); ?>
+        <div class="form-group">
+        <div id="dvPreview"></div>
+        </div>
 
 
 <button type="submit" class="btn btn-primary btn-lg btn-block" name="save_question" value="save">Save</button>
@@ -100,4 +150,39 @@ if(isset($category))
 </div>
 </div>
 
-
+<script language="javascript" type="text/javascript">
+window.onload = function () {
+var fileUpload = document.getElementById("mimage");
+fileUpload.onchange = function () {
+if (typeof (FileReader) != "undefined") {
+var dvPreview = document.getElementById("dvPreview");
+dvPreview.innerHTML = "";
+var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.gif|.png|.bmp)$/;
+for (var i = 0; i < fileUpload.files.length; i++) {
+var file = fileUpload.files[i];
+if (regex.test(file.name.toLowerCase())) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+    var img = document.createElement("IMG");
+	var columnText = document.createTextNode('   ');
+    img.height = "100";
+    img.width = "100";
+    img.src = e.target.result;
+	//brs=document.createElement("&nbsp;");
+	dvPreview.appendChild(columnText);
+    dvPreview.appendChild(img);
+	//dvPreview.appenChild(&nbsp;);
+    }
+    reader.readAsDataURL(file);
+    } else {
+        alert(file.name + " is not a valid image file.");
+        dvPreview.innerHTML = "";
+        return false;
+    }
+ }
+    } else {
+        alert("This browser does not support HTML5 FileReader.");
+                }
+            }
+        };
+    </script>  

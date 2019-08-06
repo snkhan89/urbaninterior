@@ -39,51 +39,82 @@ class Project extends CI_Controller
 	{
 		$category = $this->input->post('category');
 		$title = $this->input->post('title');
+		$cover_image = $this->input->post('cover_image');
+		$images = $this->input->post('userFiles');
 		
-		if(isset($_FILES['thumb_image']['name']) && $_FILES['thumb_image']['name']!="")
-		{  
-	       $thumb_image = $_FILES['thumb_image']['name'];
-	    } 
 		
 		$this->form_validation->set_rules('category','Category','trim|required');
 		$this->form_validation->set_rules('title','Title','trim|required');
-		
+		if (empty($_FILES['cover_image']['name']))
+		{
+			$this->form_validation->set_rules('cover_image', 'Cover Image', 'required');
+		}
 		
 		if($this->form_validation->run() == FALSE)
 		{
+			$this->form_validation->set_error_delimiters('<p style="color:red">', '</p>');
 			$this->load->view('project',$this->data);
 			$this->load->view('Footer',$this->data);
 		}
 		else
 		{
-			    if(!empty($thumb_image))		
-			    {
-					$config['upload_path']  = './Project_Image/';
-					$config['allowed_types'] = 'gif|jpg|png';
-					$config['max_size'] = '';
-					$config['max_width'] = '';
-					$config['max_height']  = '';
+			    
+			if(!empty($_FILES['cover_image']['name']) && isset($_FILES['cover_image']['name']) && $_FILES['cover_image']['name']!="" )
+			{
+						$config['upload_path'] = './project_image/';
+						$config['allowed_types'] = 'gif|jpg|png';
+						$config['max_size']= "";
+						$config['max_width'] = "";
+						$config['max_height']= "";
+						
+						$this->load->library('upload', $config);
+						$this->upload->initialize($config);
+						
+						if (!$this->upload->do_upload('cover_image'))
+						{
+						    $error = $this->upload->display_errors();
+							$this->session->set_flashdata('error_login',"$error");
+						    redirect('Project');
+                        }
+						else
+						{
+							$data = $this->upload->data(); 
+							$cimage = $data['file_name'];
+							
+							$multiple_image = "";
+							if (!empty($_FILES['userFiles']['name']))
+							{
+								$filesCount = count($_FILES['userFiles']['name']);
+								for ($i = 0; $i < $filesCount; $i++)
+								{
+									$_FILES['userFile']['name'] = $_FILES['userFiles']['name'][$i];
+									$_FILES['userFile']['type'] = $_FILES['userFiles']['type'][$i];
+									$_FILES['userFile']['tmp_name'] = $_FILES['userFiles']['tmp_name'][$i];
+									$_FILES['userFile']['error'] = $_FILES['userFiles']['error'][$i];
+									$_FILES['userFile']['size'] = $_FILES['userFiles']['size'][$i];
+									$uploadPath = 'project_image/resize/';
+									$config['upload_path'] = $uploadPath;
+									$config['allowed_types'] = 'gif|jpg|png';
+									$this->load->library('upload', $config);
+									$this->upload->initialize($config);
+									if ($this->upload->do_upload('userFile'))
+									{
+										$fileData = $this->upload->data();
+										$name_array[] = $fileData['file_name'];
+										$uploadData[$i]['file_name'] = $fileData['file_name'];
+										$uploadData[$i]['created'] = date("Y-m-d H:i:s");
+										$uploadData[$i]['modified'] = date("Y-m-d H:i:s");
+									}
+								}
 
-					$this->load->library('upload', $config);
-					if(!$this->upload->do_upload('thumb_image'))
-					{
-						$error = array('error'=>$this->upload->display_errors());
-						$this->load->view('project',$error);
-					}
-					else
-					{
-						$data = array('upload_data'=>$this->upload->data());
-					}
-			 
-				}
-				else
-				{
-					$this->session->set_flashdata('error',"Image Could not be uploaded...");
-				    redirect('Project');
-				}
+								@$multiple_image = implode(',', $name_array);
+							}
+							
+						}
+			}
 			
-			
-			$response = $this->Add_model->project($category,$title,$thumb_image);
+				
+			$response = $this->Add_model->project($category,$title,$cimage,$multiple_image);
 			if($response == 1)
 			{
 				$this->session->set_flashdata('sucess',"Added successfully...");
@@ -94,6 +125,7 @@ class Project extends CI_Controller
 				$this->session->set_flashdata('error',"Error...");
 				redirect('Project');
 			}
+			
 		}
     }
 
@@ -112,13 +144,9 @@ class Project extends CI_Controller
 		public function edit()
 		{
 			$data["category"] = json_decode($this->Add_model->category(),true);
-			
 			$eid=$this->uri->segment(3);
-			
 			$data["eid"]=$eid;
-			
 			$data["get_results"]= json_decode($this->Add_model->edit_project($eid),true);
-			
 			if($data["get_results"] == "")
 			{
 				$this->session->set_flashdata('error',"Something went wrong.try again");
@@ -161,28 +189,6 @@ class Project extends CI_Controller
 				else
 				{
 
-					if($_FILES['thumb_image']['name']!="")
-					{
-							
-						$config['upload_path']  = './Project_Image/';
-						$config['allowed_types'] = 'gif|jpg|png';
-						$config['max_size'] = '';
-						$config['max_width'] = '';
-						$config['max_height']  = '';
-						$this->load->library('upload', $config);
-						if(!$this->upload->do_upload('thumb_image'))
-						{
-							$error = array('error'=>$this->upload->display_errors());
-							$this->load->view('Project', $error);
-							//$this->session->set_flashdata('error',$this->upload->display_errors());
-							//redirect('Slider/edit/'.$eid);
-						}
-						else
-						{
-							$data = array('upload_data'=>$this->upload->data());
-						}
-					}
-						
 					$response=$this->Add_model->update_project($eid,$category,$title,$thumb_image);
 					if($response==1)
 					{
@@ -236,7 +242,7 @@ class Project extends CI_Controller
 		}
 
 
-
+    
 
 
 
