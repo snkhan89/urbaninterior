@@ -169,13 +169,13 @@ class Project extends CI_Controller
 			$category = $this->input->post('category');
 		    $title = $this->input->post('title');
 		
-			if(isset($_FILES['thumb_image']['name']) && $_FILES['thumb_image']['name']!="")
+			if(isset($_FILES['cover_image']['name']) && $_FILES['cover_image']['name']!="")
 			{  
-			   $thumb_image = $_FILES['thumb_image']['name'];
+			   $thumb_image = $_FILES['cover_image']['name'];
 			}
             else
 			{
-			   $thumb_image = $this->input->post('old_thumbimage');
+			   $thumb_image = $this->input->post('old_cover');
 			}			
 					
 				$this->form_validation->set_rules('title','Title','trim|required');
@@ -189,23 +189,79 @@ class Project extends CI_Controller
 				else
 				{
 
-					$response=$this->Add_model->update_project($eid,$category,$title,$thumb_image);
-					if($response==1)
-					{
+					if (!empty($_FILES['cover_image']['name']) && isset($_FILES['cover_image']['name']) && $_FILES['cover_image']['name']!="")
+				    {
+					  	@unlink('project_image/'.$thumb_image);
+						$config['upload_path']= './project_image/';
+						$config['allowed_types']= 'gif|jpg|png';
+						$config['max_size'] = 12000;
+						$config['max_width'] = "";
+						$config['max_height'] = "";
+						
+						$this->load->library('upload', $config);
+						$this->upload->initialize($config);
+						
+								if (!$this->upload->do_upload('cover_image'))
+								{
+								   $error = $this->upload->display_errors();
+								   $this->session->set_flashdata('error_login',"$error");
+								   redirect('Project/edit/'.$eid);
+
+								}
+								else
+								{
+									$data = $this->upload->data(); 
+									$thumb_image = $data['file_name'];
+								}
+				    }	
+					
+				if (!empty($_FILES['userFiles']['name']))
+				{
+				   $multiple_image = "";
+				   $filesCount = count($_FILES['userFiles']['name']);
+				   for($i = 0; $i < $filesCount; $i++)
+				   {
+						$_FILES['userFile']['name'] = $_FILES['userFiles']['name'][$i];
+						$_FILES['userFile']['type'] = $_FILES['userFiles']['type'][$i];
+						$_FILES['userFile']['tmp_name'] = $_FILES['userFiles']['tmp_name'][$i];
+						$_FILES['userFile']['error'] = $_FILES['userFiles']['error'][$i];
+						$_FILES['userFile']['size'] = $_FILES['userFiles']['size'][$i];
+						$uploadPath = 'project_image/resize/';
+						$config['upload_path'] = $uploadPath;
+						$config['allowed_types'] = 'gif|jpg|png';
+						$this->load->library('upload', $config);
+						$this->upload->initialize($config);
+						if ($this->upload->do_upload('userFile'))
+						{
+							$fileData = $this->upload->data();
+							$name_array[] = $fileData['file_name'];
+							$uploadData[$i]['file_name'] = $fileData['file_name'];
+							$uploadData[$i]['created'] = date("Y-m-d H:i:s");
+							$uploadData[$i]['modified'] = date("Y-m-d H:i:s");
+						}
+				    }
+
+				   @$multiple_image = implode(',', $name_array);
+				}
+					
+					
+				$response=$this->Add_model->update_project($eid,$category,$title,$thumb_image,$multiple_image);
+				if($response==1)
+				{
 						$this->session->set_flashdata('sucess',"Updated sucessfully.");
 						redirect('Project/edit/'.$eid);
-					}
-					else if($response==2)
-					{
+				}
+				else if($response==2)
+				{
 						$this->session->set_flashdata('error',"No Changes in data.");
 						redirect('Project/edit/'.$eid);
-					}
-					else
-					{
+				}
+				else
+				{
 						$this->session->set_flashdata('error',"Something went wrong.");
 						redirect('Project/edit/'.$eid);
-					}
 				}
+			}
 
 		}
 
@@ -213,10 +269,10 @@ class Project extends CI_Controller
 		public function status()
 		{
 
-				$eid = $this->uri->segment(3);
+			$eid = $this->uri->segment(3);
 			
-				if(isset($eid) && !empty($eid))
-				{
+			if(isset($eid) && !empty($eid))
+			{
 					$get_status = json_decode($this->Add_model->Project_status($eid),true);
 					if($get_status == 1)
 					{
@@ -233,12 +289,12 @@ class Project extends CI_Controller
 							$this->session->set_flashdata('error',"Sorry,try again!.");
 							redirect('Project/view');
 					}
-				}
-				else
-				{
+			}
+			else
+			{
 					 $this->session->set_flashdata('error',"Sorry,try again!.");
 					 redirect('Project/view');
-				}
+			}
 		}
 
 

@@ -63,43 +63,25 @@ if(isset($category))
 
  <hr>
  
-<!--<div class="form-group">
-<label>Thumbnail Image (800 * 600)</label>
-<input type="file" name="thumb_image" id="thumb_image"> </br>
-
-<?php if(isset($get_results) && file_exists("Project_Image/".$get_results['thumb_image']) && !empty($get_results['thumb_image']) ) 
-{ ?>
-    <img src="<?php echo base_url();?>Project_Image/<?php if(isset($get_results['thumb_image'])){echo $get_results['thumb_image'];} ?>" alt="Image" width="250px" height="150px" />
-<?php } ?>
-
-<input type="hidden" name="old_thumbimage" id="old_thumbimage" value="<?php if(isset($get_results['thumb_image'])){echo $get_results['thumb_image'];} ?>" />
-
-</div> 
-
-<hr> 
-
-<div class="form-group">
-<label>Multiple Image</label>
-<input type="file" name="multiple_image[]" id="multiple_image" multiple="multiple"> </br>
-</div> -->
-
-        
-		<?php if(isset($get_results) && $get_results['cover_image']!="" || isset($eid)){?>
         <div class="form-group">
-        <label>Old Category Image</label>
-        <input type="hidden" name="old_cover" value="<?php if(isset($get_results)){ echo $get_results['cover_image'];} ?><?php echo set_value('old_cover'); ?>"/>
-        <input type="hidden" name="old_cover_resize" value="<?php if(isset($get_results)){echo $get_results['rcover'];} ?><?php echo set_value('old_cover_resize'); ?>"/>
-      
-        <img src="<?php echo base_url();?>Project_Image/<?php if(isset($get_results)){ echo $get_results['cover_image'];}else{ echo set_value('cover_image');  } ?>" title="<?php if(isset($get_results)){ echo $get_results['cover_image'];} ?>" alt="<?php if(isset($get_results)){ echo $get_results['cover_image'];} ?>" width="20%" height="20%" />
-        </div>
-		 <?php }?>
-		
-		
-		<div class="form-group">
         <label>Cover Image</label>
         <input type="file" class="form-control" name="cover_image" id="cover_image"/>
         </div>
 		<?php echo form_error('cover_image'); ?>
+		
+		
+        <?php if(isset($get_results) && $get_results['thumb_image']!="" || isset($eid)){?>
+        <div class="form-group">
+        <label>Old Image</label>
+        <input type="hidden" name="old_cover" value="<?php if(isset($get_results)){ echo $get_results['thumb_image'];} ?><?php echo set_value('old_cover'); ?>"/>
+        
+      
+        <img src="<?php echo base_url();?>Project_Image/<?php if(isset($get_results)){ echo $get_results['thumb_image'];}else{ echo set_value('thumb_image');  } ?>" title="<?php if(isset($get_results)){ echo $get_results['thumb_image'];} ?>" alt="<?php if(isset($get_results)){ echo $get_results['thumb_image'];} ?>" width="10%" height="10%" />
+        </div>
+		 <?php }?>
+		
+		
+		
 		
 		<div class="form-group">
         <img id="blah" src="#"  width="75" height="75"alt="your image" />

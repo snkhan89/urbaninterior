@@ -1341,12 +1341,12 @@ public function project($category,$title,$cimage,$multiple_image)
 		if ($this->db->trans_status() === FALSE)
 		{
 			$this->db->trans_rollback();
-			return 2;
+			return false;
 		}
 		else
 		{
 			$this->db->trans_commit();
-			return 1;
+			return true;
 		}
 		
 	}
@@ -1394,7 +1394,7 @@ public function edit_project($eid)
 
 
 
-public function update_project($eid,$category,$title,$thumb_image)
+public function update_project($eid,$category,$title,$thumb_image,$multiple_image)
 {
 	   $array=array("category"=>$category,"title"=>$title,"thumb_image"=>$thumb_image);
 	   $this->db->where("id",$eid);
@@ -1402,11 +1402,22 @@ public function update_project($eid,$category,$title,$thumb_image)
 	   $cnt=$this->db->affected_rows();
 	   if(isset($cnt) && $cnt > 0)
 	   {
-		  return 1;
+		  if(!empty($multiple_image))
+		  {
+			  $mmultiple_image = explode(",", $multiple_image);
+			  $p = 1;
+			  foreach($mmultiple_image as $row)
+			  {
+				$query = $this->db->query("insert into project_details(project_id,image)values('".$eid."','".$row."')");
+				$p++;
+			  }
+		  }
+		  
+		  return true;
 	   }
 	   else
 	   {
-		  return 2; 
+		  return false; 
 	   }	
 }
 
