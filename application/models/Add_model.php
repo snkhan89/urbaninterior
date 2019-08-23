@@ -1325,7 +1325,7 @@ public function project($category,$title,$cimage,$multiple_image)
 	
 	$this->db->trans_start();
 	
-	$array = array('category'=>$category,'title'=>$title,'thumb_image'=>$cimage);
+	$array = array('category'=>$category,'title'=>$title,'thumb_image'=>$cimage,"status"=>1);
 	$this->db->insert("project",$array);
 	$lastid = $this->db->insert_id();
 	if (isset($multiple_image) && $multiple_image != "")

@@ -1290,7 +1290,7 @@ $(document).ready(function () {
         if (error) {
             $.ajax({
                 type: "POST",
-                url: "contact.php",
+                url: $('#base').val()+"Website/contact",
                 data: $("#contactusform").serialize(),
                 success: function (result) {
                     $('input[type=text],textarea').each(function () {

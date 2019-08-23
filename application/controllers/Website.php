@@ -25,9 +25,16 @@ class Website extends CI_Controller
 	}
 
 	public function projectDetail(){
-        $this->load->model("Website_model");
-        $data['title'] = 'Urban Interior Works';
-        $this->load->view('website_projects',$data);
+        if($this->uri->segment(3)) {
+            $this->load->model("Website_model");
+            $data['title'] = 'Urban Interior Works';
+            $data['details'] = $this->Website_model->get_project_details($this->uri->segment(3));
+            $this->load->view('website_projects', $data);
+        }
+    }
+
+    public function contact(){
+        var_dump($this->input->post());
     }
 
 
