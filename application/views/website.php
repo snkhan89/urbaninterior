@@ -200,17 +200,25 @@
                             <ul class="masonry-items grid lightbox-gallery">
                                 <!-- porfilio item -->
                                 <?php
-                                foreach($projects as $p){
-                                    ?>
-                                    <li class="<?php echo $p['category_name'] ?>">
-                                        <figure>
-                                            <div class="gallery-img"><a href="<?php echo base_url().'Website/projectDetail/'.$p['id']; ?>" class="simple-ajax-popup-align-top" title=""><img src="<?php echo base_url().'Project_Image/'.$p['thumb_image']; ?>" alt=""></a></div>
-                                            <figcaption>
-                                                <h3><?php echo $p['title']; ?></h3>
-                                            </figcaption>
-                                        </figure>
-                                    </li>
-                                <?php
+//                                var_dump($projects);
+//                                exit;
+                                if(!empty($projects)) {
+                                    foreach ($projects as $p) {
+                                        ?>
+                                        <li class="<?php echo $p['category_name'] ?>">
+                                            <figure>
+                                                <div class="gallery-img"><a
+                                                            href="<?php echo base_url() . 'Website/projectDetail/' . $p['id']; ?>"
+                                                            class="simple-ajax-popup-align-top" title=""><img
+                                                                src="<?php echo base_url() . 'Project_Image/' . $p['thumb_image']; ?>"
+                                                                alt=""></a></div>
+                                                <figcaption>
+                                                    <h3><?php echo $p['title']; ?></h3>
+                                                </figcaption>
+                                            </figure>
+                                        </li>
+                                        <?php
+                                    }
                                 }
                                 ?>
 
@@ -328,7 +336,8 @@
                 </div>      
             </div>
             <!-- scroll to top --> 
-            <a href="javascript:;" class="scrollToTop"><i class="fa fa-angle-up"></i></a> 
+            <a href="javascript:;" class="scrollToTop"><i class="fa fa-angle-up"></i></a>
+            <input type="hidden" id="base" value="<?php echo base_url(); ?>">
             <!-- scroll to top End... --> 
         </footer>
         <!-- end footer -->
@@ -376,7 +385,7 @@
         <script type="text/javascript" src="<?php echo base_url().'website_assets/'; ?>js/hamburger-menu.js"></script>
         <!-- one page navigation --> 
         <script type="text/javascript" src="<?php echo base_url().'website_assets/'; ?>js/one-page-main.js"></script>
-        <!-- setting --> 
+        <!-- setting -->
         <script type="text/javascript" src="<?php echo base_url().'website_assets/'; ?>js/main.js"></script>
     </body>
 

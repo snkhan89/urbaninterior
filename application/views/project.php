@@ -81,7 +81,13 @@ if(isset($category))
 		 <?php }?>
 		
 		
-		
+
+		<div class="form-group">
+        <label>Cover Image</label>
+        <input type="file" class="form-control" accept="image/*" name="cover_image" id="cover_image"/>
+        </div>
+		<?php echo form_error('cover_image'); ?>
+
 		
 		<div class="form-group">
         <img id="blah" src="#"  width="75" height="75"alt="your image" />
@@ -108,7 +114,7 @@ if(isset($category))
 		
 		<div class="form-group">
         <label>Multiple Image</label>
-        <input type="file" id="mimage"  class="form-control" name="userFiles[]" multiple/>
+        <input type="file" id="mimage" accept="image/*"  class="form-control" name="userFiles[]" multiple/>
         </div>         
         <?php echo form_error('images'); ?>
         <div class="form-group">
