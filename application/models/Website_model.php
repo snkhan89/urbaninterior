@@ -108,5 +108,16 @@ class Website_model extends CI_Model
         }
     }
 
+    public function contact($name,$email,$message){
+        $my_array = array('name'=>$name,'email'=>$email,'message'=>$message);
+        $this->db->insert('contact',$my_array);
+        $cnt=$this->db->affected_rows();
+        if(isset($cnt) && $cnt > 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
    
 }

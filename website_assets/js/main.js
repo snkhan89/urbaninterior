@@ -1292,11 +1292,13 @@ $(document).ready(function () {
                 type: "POST",
                 url: $('#base').val()+"Website/contact",
                 data: $("#contactusform").serialize(),
+                dataType:'json',
                 success: function (result) {
+                    console.log(result);
                     $('input[type=text],textarea').each(function () {
                         $(this).val('');
                     })
-                    $("#success").html(result);
+                    $("#success").html(result.message);
                     $("#success").fadeIn("slow");
                     $('#success').delay(4000).fadeOut("slow");
                 }
